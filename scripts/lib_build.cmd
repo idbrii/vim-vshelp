@@ -1,7 +1,18 @@
 :: Generic script template for building Visual Studio projects using MSBuild.
 @echo off
 
+title %0 %*
+
+if "%1" == "help" (
+	echo lib_build.cmd usage:
+	echo Build code for a solution. Unspecified arguments will use defaults.
+	echo make [config] [platform] [project] [work_dir] [target]
+	echo make Debug pc zelda c:/p4/zelda/game/source/pc zelda_pc
+	exit /b 1
+)
+
 setlocal
+
 set config=%1
 if NOT defined config (
 	set config=Debug
@@ -15,11 +26,14 @@ if NOT defined sku (
 :: Map sku to VS platform config
 set sku_platform=%sku%
 if %sku% == pc (
-	set sku_platform=Win32
+	set sku_platform=x64
 ) else if %sku% == ps3 (
 	set sku_platform=PS3
-) else if %sku% == Xbox360 (
-	set sku_platform="Xbox 360"
+) else if %sku% == xbox (
+	set sku=Durango
+	set sku_platform=Durango
+) else (
+	echo Unknown platform. Using %sku_platform%
 )
 
 
@@ -43,6 +57,9 @@ if NOT defined target (
 
 set log_file=%TEMP%\build_%project%_%sku%.log
 
+echo %log_file%(0): Build Started: %DATE% %TIME%
+
+:: TODO: You might want x64 buildchain instead of x86.
 call "C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\vcvarsall.bat" x86 >NUL
 pushd %work_dir%
 
