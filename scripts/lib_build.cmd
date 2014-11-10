@@ -31,14 +31,14 @@ if NOT defined project (
 
 set work_dir=%4
 if NOT defined work_dir (
-	:: TODO: Update this with your project path.
-	set work_dir=c:\p4\%project%
+	:: TODO: Update with the path to your solution.
+	set work_dir=c:\p4\%project%\game\source\pc
 )
 
-set vcproj=%5
-if NOT defined vcproj (
-	:: TODO: Update this with your project naming scheme.
-	set vcproj=%project%_%sku%.vcxproj
+set target=%5
+if NOT defined target (
+	:: TODO: Update this with your vcxproj/sln naming scheme.
+	set target=%project%_%sku%
 )
 
 set log_file=%TEMP%\build_%project%_%sku%.log
@@ -49,7 +49,8 @@ pushd %work_dir%
 :: /verbosity:quiet - squelch nonessential build output (so we don't see build step errors, etc).
 :: /property:GenerateFullPaths=true to make sure we get paths that vim can use.
 :: Use tee so we can see the build log while it's building if we want.
-msbuild /nologo /v:quiet /p:GenerateFullPaths=true /p:Configuration="%config%" /p:Platform="%sku_platform%" %vcproj% | tee %log_file%
+:: You may have problems if you have spaces in your Config or platform names.
+msbuild /nologo /v:quiet /p:GenerateFullPaths=true /target:%target% /p:Configuration=%config% /p:Platform=%sku_platform% %work_dir%\%target%.sln 2>&1 | tee %log_file%
 :: Output logfile so it's in vim quickfix for easy jumping.
 echo %log_file%(0): Build Completed: %DATE% %TIME%
 
