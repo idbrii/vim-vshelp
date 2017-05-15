@@ -4,12 +4,14 @@
 ::
 
 
+:: VS2008
+"c:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\ide\devenv" /Edit "%1" /Command "Edit.GoTo %2"
 :: VS2012
 REM "c:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv" /Edit "%1" /Command "Edit.GoTo %2"
 :: VS2013
 REM "c:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv" /Edit "%1" /Command "Edit.GoTo %2"
 :: VS2015
-"c:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv" /Edit "%1" /Command "Edit.GoTo %2"
+REM "c:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv" /Edit "%1" /Command "Edit.GoTo %2"
 
 
 
