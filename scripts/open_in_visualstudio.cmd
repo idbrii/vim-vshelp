@@ -3,6 +3,8 @@
 :: Bug: The line doesn't work
 ::
 
+:: TODO: Use VisualStudioFileOpenTool to make line numbers work.
+:: https://github.com/diimdeep/VisualStudioFileOpenTool
 
 :: VS2008
 "c:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\ide\devenv" /Edit "%1" /Command "Edit.GoTo %2"
