@@ -6,23 +6,13 @@ endif
 let g:loaded_vshelp = 1
 
 
-if !exists("s:vshelp_devenv")
-	" assume relative to current
-	let install_dir = expand("<sfile>:p:h:h")
-	let s:vshelp_devenv = install_dir . expand('/scripts/open_in_visualstudio.cmd')
-
-	" fail if not found
-	if !filereadable(s:vshelp_devenv)
-		echoerr 'vshelp is installed incorrectly. The plugin/ and scripts/ directories must be in the same folder.'
-		finish
-	endif
-endif
-
-function s:OpenInVisualStudio()
-	let prefix = 'silent ! '
-	if exists('g:loaded_asynccommand')
-		let prefix = 'AsyncCommand '
-	endif
-	exec prefix . s:vshelp_devenv . ' ' . fnameescape(expand('%:p')) . ' ' . line('.')
+function! s:OpenInVisualStudio()
+	let pos = getcurpos()
+	let line = pos[1]
+	let column = pos[2]
+	let filename = fnameescape(expand('%:p'))
+    python import vshelp
+    python vshelp.vim_open_in_visualstudio()
 endfunction
-command VSOpen call s:OpenInVisualStudio()
+
+command! VSOpen call s:OpenInVisualStudio()
