@@ -14,18 +14,15 @@ from __future__ import unicode_literals
 import pywintypes
 import win32com.client
 
-# filename = sys.argv[1]
-# line = int(sys.argv[2])
-# column = int(sys.argv[3])
-
 def open_in_visualstudio(filename, line, column):
     try:
         dte = win32com.client.GetActiveObject("VisualStudio.DTE")
         dte.MainWindow.Activate
         dte.ItemOperations.OpenFile(filename)
         dte.ActiveDocument.Selection.MoveToLineAndOffset(line, column+1)
+
     except pywintypes.com_error as err:
-        # Sometimes we get this error:
+        # Sometimes we get this unhelpful error:
         #   pywintypes.com_error: (-2147352567, 'Exception occurred.', (0, None, None, None, 0, -2147024809), None)
         # I haven't seen a good reason for it. Maybe we should try to fall back
         # to the old batchfile method?
@@ -49,3 +46,12 @@ def vim_open_in_visualstudio():
 
     # print(filename, line, column)
     return open_in_visualstudio(filename, line, column)
+
+
+if __name__ == '__main__':
+    import sys
+    filename = sys.argv[1]
+    line = int(sys.argv[2])
+    column = int(sys.argv[3])
+    open_in_visualstudio(filename, line, column)
+
