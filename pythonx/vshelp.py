@@ -11,23 +11,29 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import os
+
 import pywintypes
 import win32com.client
 
 def open_in_visualstudio(filename, line, column):
+    dte = None
     try:
         dte = win32com.client.GetActiveObject("VisualStudio.DTE")
-        dte.MainWindow.Activate
-        dte.ItemOperations.OpenFile(filename)
-        dte.ActiveDocument.Selection.MoveToLineAndOffset(line, column+1)
 
     except pywintypes.com_error as err:
-        # Sometimes we get this unhelpful error:
-        #   pywintypes.com_error: (-2147352567, 'Exception occurred.', (0, None, None, None, 0, -2147024809), None)
-        # I haven't seen a good reason for it. Maybe we should try to fall back
-        # to the old batchfile method?
         print("Failed to get handle to Visual Studio:")
         print(err)
+
+    if dte:
+        try:
+            dte.ItemOperations.OpenFile(filename)
+            dte.ActiveDocument.Selection.MoveToLineAndOffset(line, column+1)
+            dte.MainWindow.Activate
+
+        except pywintypes.com_error as err:
+            print("Failed to open file: "+ filename)
+            print(err)
 
 
 # Expects three local variables:
@@ -43,6 +49,9 @@ def vim_open_in_visualstudio():
         args[a] = int(args[a])
 
     filename, line, column = args['filename'], args['line'], args['column']
+    # Let python deal with escaping.
+    filename = filename.replace('\\', '')
+    filename = os.path.abspath(filename)
 
     # print(filename, line, column)
     return open_in_visualstudio(filename, line, column)
