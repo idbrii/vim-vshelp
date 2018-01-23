@@ -11,6 +11,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import pywintypes
 import win32com.client
 
 # filename = sys.argv[1]
@@ -18,11 +19,19 @@ import win32com.client
 # column = int(sys.argv[3])
 
 def open_in_visualstudio(filename, line, column):
-    dte = win32com.client.GetActiveObject("VisualStudio.DTE")
+    try:
+        dte = win32com.client.GetActiveObject("VisualStudio.DTE")
+        dte.MainWindow.Activate
+        dte.ItemOperations.OpenFile(filename)
+        dte.ActiveDocument.Selection.MoveToLineAndOffset(line, column+1)
+    except pywintypes.com_error as err:
+        # Sometimes we get this error:
+        #   pywintypes.com_error: (-2147352567, 'Exception occurred.', (0, None, None, None, 0, -2147024809), None)
+        # I haven't seen a good reason for it. Maybe we should try to fall back
+        # to the old batchfile method?
+        print("Failed to get handle to Visual Studio:")
+        print(err)
 
-    dte.MainWindow.Activate
-    dte.ItemOperations.OpenFile(filename)
-    dte.ActiveDocument.Selection.MoveToLineAndOffset(line, column+1)
 
 # Expects three local variables:
 # "filename", "line", "column"
