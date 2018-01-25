@@ -11,8 +11,16 @@ function! s:OpenInVisualStudio()
 	let line = pos[1]
 	let column = pos[2]
 	let filename = fnameescape(expand('%:p'))
-    python import vshelp
-    python vshelp.vim_open_in_visualstudio()
+    python << EOP
+try:
+    import vshelp
+    vshelp.vim_open_in_visualstudio()
+except ImportError as err:
+    print("ERROR: "+ str(err) +"\n"
+    + """vshelp will fail to import when pywintypes fails to import.
+Try removing pywin32 and pypiwin32 and then installing pypiwin32 again.
+""")
+EOP
 endfunction
 
 command! VSOpen call s:OpenInVisualStudio()
