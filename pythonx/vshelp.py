@@ -12,9 +12,33 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import os
+import subprocess
 
 import pywintypes
 import win32com.client
+
+def _find_latest_devenv():
+    cmd = "C:/Program Files (x86)/Microsoft Visual Studio/2017/Professional/Common7/ide/"
+    if os.path.exists(cmd):
+        return cmd
+
+    versions = (9, 11, 12, 14)
+    for v in versions:
+        cmd = "c:/Program Files (x86)/Microsoft Visual Studio {version}.0/Common7/ide/".format(version=v)
+        if os.path.exists(cmd):
+            return cmd
+
+    return ""
+
+
+def _open_with_batch(filename, line):
+    cmd = _find_latest_devenv() +"/devenv"
+    args = ('/Edit "{filename}"'.format(filename=filename),
+            '/Command "Edit.GoTo {line}"'.format(line=line))
+    ret = subprocess.call([cmd, args])
+    if ret != 0:
+        print("devenv.exe invocation failed: {code}".format(code=ret))
+
 
 def open_in_visualstudio(filename, line, column):
     dte = None
@@ -22,8 +46,9 @@ def open_in_visualstudio(filename, line, column):
         dte = win32com.client.GetActiveObject("VisualStudio.DTE")
 
     except pywintypes.com_error as err:
-        print("Failed to get handle to Visual Studio:")
+        print("Failed to get handle to Visual Studio (falling back to cmdline):")
         print(err)
+        _open_with_batch(filename, line)
 
     if dte:
         try:
