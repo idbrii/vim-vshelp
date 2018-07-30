@@ -14,8 +14,11 @@ from __future__ import unicode_literals
 import os
 import subprocess
 
-import pywintypes
-import win32com.client
+try:
+    import pywintypes
+    import win32com.client
+except ImportError:
+    pywintypes = None
 
 def _find_latest_devenv():
     cmd = "C:/Program Files (x86)/Microsoft Visual Studio/2017/Professional/Common7/ide/"
@@ -41,6 +44,11 @@ def _open_with_batch(filename, line):
 
 
 def open_in_visualstudio(filename, line, column):
+    if not pywintypes:
+        print("Don't have win32com + pywintypes installed (falling back to cmdline):")
+        _open_with_batch(filename, line)
+        return
+
     dte = None
     try:
         dte = win32com.client.GetActiveObject("VisualStudio.DTE")
