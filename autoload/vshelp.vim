@@ -11,7 +11,7 @@ function! vshelp#OpenInVisualStudio()
 	let pos = getcurpos()
 	let line = pos[1]
 	let column = pos[2]
-	let filename = fnameescape(expand('%:p'))
+	let filename = fnameescape(vshelp#path#expand_as_unix_path('%:p'))
     python << EOP
 try:
     import vshelp
