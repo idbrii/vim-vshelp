@@ -35,10 +35,10 @@ def _find_latest_devenv():
 
 
 def _open_with_batch(filename, line):
-    cmd = _find_latest_devenv() +"/devenv"
-    args = ('/Edit "{filename}"'.format(filename=filename),
-            '/Command "Edit.GoTo {line}"'.format(line=line))
-    ret = subprocess.call([cmd, args])
+    cmd = [os.path.join(_find_latest_devenv(), "devenv")]
+    cmd.extend(['/Edit "{filename}"'.format(filename=filename),
+            '/Command "Edit.GoTo {line}"'.format(line=line)])
+    ret = subprocess.call(cmd)
     if ret != 0:
         print("devenv.exe invocation failed: {code}".format(code=ret))
 
