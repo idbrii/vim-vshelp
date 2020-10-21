@@ -12,7 +12,7 @@ function! vshelp#OpenInVisualStudio()
 	let line = pos[1]
 	let column = pos[2]
 	let filename = fnameescape(vshelp#path#expand_as_unix_path('%:p'))
-    python << EOP
+    pythonx << EOP
 try:
     import vshelp
     vshelp.vim_open_in_visualstudio()
