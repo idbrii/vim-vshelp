@@ -41,6 +41,7 @@ def _open_with_batch(filename, line):
         # Edit.Goto always results in a new VS instance and an error.
         # f'/Command Edit.GoTo {line}',
     ])
+    ret = subprocess.call(cmd)
     if ret != 0:
         print("devenv.exe invocation failed: {code}".format(code=ret))
 
