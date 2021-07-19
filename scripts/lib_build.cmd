@@ -59,8 +59,8 @@ set log_file=%TEMP%\build_%project%_%sku%.log
 
 echo %log_file%(0): Build Started: %DATE% %TIME%
 
-:: TODO: You might want x64 buildchain instead of x86.
-call "C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\vcvarsall.bat" x86 >NUL
+:: TODO: You might want a different VS version or toolchain arch.
+call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64 >NUL
 pushd %work_dir%
 
 :: /verbosity:quiet - squelch nonessential build output (so we don't see build step errors, etc).
